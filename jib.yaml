@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jib-svc
+  namespace: default
+  labels:
+    app: jib
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: jib
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jib
+  namespace: default
+  labels:
+    app: jib
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jib
+  template:
+    metadata:
+      labels:
+        app: jib
+    spec:
+      containers:
+      - name: jib
+        image: 172.22.11.2:30500/jib-test
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: https
+          containerPort: 8443
